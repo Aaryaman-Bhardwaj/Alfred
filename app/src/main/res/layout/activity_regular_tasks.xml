@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/home_bg"
-    tools:context=".MainActivity">
+    tools:context=".RegularTasks">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/toolbar_parent"
@@ -30,67 +30,58 @@
                 tools:layout_editor_absoluteX="0dp"
                 tools:layout_editor_absoluteY="0dp" />
 
+
             <ImageButton
-                android:id="@+id/goto_reg_task"
+                android:id="@+id/goto_home"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
+                android:layout_marginStart="16dp"
                 android:background="#00FFFFFF"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_baseline_edit_24" />
-
+                app:srcCompat="@drawable/ic_twotone_arrow_back_24" />
 
             <TextView
                 android:id="@+id/edit_add_special_task2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="monospace"
+                android:layout_marginStart="16dp"
+                android:fontFamily="sans-serif-thin"
                 android:padding="10dp"
                 android:paddingStart="12dp"
-                android:text="Alfred"
+                android:text="Your Daily Tasks List"
                 android:textColor="#B3DA1F"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/goto_home"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageButton
-                android:id="@+id/goto_special_task"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_marginEnd="16dp"
-                android:background="#00FFFFFF"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/goto_reg_task"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_baseline_add_24" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/special_task_recycler_view"
-        android:layout_width="0dp"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
-        android:layout_marginTop="8dp"
-        android:paddingBottom="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar_parent" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/home_recycler_view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginBottom="44dp"
+        android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/special_task_recycler_view" />
+        app:srcCompat="@drawable/ic_baseline_add_24" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/regular_task_list"
+        android:layout_width="0dp"
+        android:layout_height="629dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

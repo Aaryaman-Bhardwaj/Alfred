@@ -2,6 +2,8 @@ package com.aaryaman.alfred.recycler
 
 import android.content.ContentValues
 import android.content.Context
+import android.graphics.Color
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +15,8 @@ import com.aaryaman.alfred.models.Task
 import com.aaryaman.alfred.todaysTaskList
 import kotlinx.android.synthetic.main.regular_task_item.view.*
 import com.aaryaman.alfred.db.DbManager
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 lateinit var cont: Context
 
@@ -39,34 +43,48 @@ class homeRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
 class RegularTaskListHolder constructor(itemView : View) : RecyclerView.ViewHolder(itemView) {
 
     val box = itemView.regular_task_name
+    val time = itemView.regular_task_time
     val tick= itemView.regular_task_tick
 
 
     fun bind(task: Task) {
         box.text= task.name
-        if (task.tick =="1"){
+        time.text = task.time
+        if (task.tick =="1" ){
             tick.setImageResource(R.drawable.tick1)
             tick.contentDescription= "1"
         }
         else {
-            tick.setImageResource(R.drawable.bug1)
+            tick.setImageResource(R.drawable.remove_circle_24)
             tick.contentDescription= "0"
-
+            if( if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm")) > task.time
+                    } else {
+                        TODO("VERSION.SDK_INT < O")
+                    })
+                box.background = Color.parseColor("#4BFA0000").toDrawable()
         }
     }
 
     init {
-        itemView.setOnClickListener {
+        itemView.regular_task_tick.setOnClickListener {
 
             if (itemView.regular_task_tick.contentDescription== "0")   {
                 itemView.regular_task_tick.setImageResource(R.drawable.tick1)
                 itemView.regular_task_tick.contentDescription = "1"
                 UpdateTick("1", itemView.regular_task_name.text.toString())
+                box.background = Color.parseColor("#4BF4F1F1").toDrawable()
             }
             else{
-                itemView.regular_task_tick.setImageResource(R.drawable.bug1)
+                itemView.regular_task_tick.setImageResource(R.drawable.remove_circle_24)
                 itemView.regular_task_tick.contentDescription = "0"
                 UpdateTick("0", itemView.regular_task_name.text.toString())
+                if( if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm")) >  itemView.regular_task_time.text.toString()
+                    } else {
+                        TODO("VERSION.SDK_INT < O")
+                    })
+                    box.background = Color.parseColor("#4BFA0000").toDrawable()
             }
         }
     }
@@ -76,14 +94,19 @@ class RegularTaskListHolder constructor(itemView : View) : RecyclerView.ViewHold
 
         val values= ContentValues()
         values.put("Today", newState)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            values.put("Date", LocalDateTime.now().format(DateTimeFormatter.ISO_DATE))
+        }
 
         val ID= dbManager.UpdateRegularTaskTick(values, name)
 
         if (ID>0)
-            if (newState=="1")
+            if (newState=="1"){
                 Toast.makeText(cont, " ✅ $name", Toast.LENGTH_SHORT).show()
-            else
+            }
+            else{
                 Toast.makeText(cont, " ❌ $name", Toast.LENGTH_SHORT).show()
+            }
         else
             Toast.makeText(cont, "Error occurred ", Toast.LENGTH_SHORT).show()
 

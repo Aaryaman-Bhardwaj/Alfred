@@ -1,7 +1,6 @@
 package com.aaryaman.alfred.recycler
 
 import android.content.ContentValues
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,9 +8,9 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.aaryaman.alfred.R
 import com.aaryaman.alfred.models.Task
-import com.aaryaman.alfred.todaysTaskList
 import kotlinx.android.synthetic.main.regular_task_item.view.*
 import com.aaryaman.alfred.db.DbManager
+import com.aaryaman.alfred.todaysSpecialTaskList
 
 
 class specialTaskHomeRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -23,13 +22,13 @@ class specialTaskHomeRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.Vie
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when(holder){
             is SpecialTaskListHolder -> {
-                holder.bind(todaysTaskList!![position])
+                holder.bind(todaysSpecialTaskList!![position])
             }
         }
     }
 
     override fun getItemCount(): Int {
-        return todaysTaskList!!.size
+        return todaysSpecialTaskList!!.size
     }
 }
 
@@ -47,14 +46,14 @@ class SpecialTaskListHolder constructor(itemView : View) : RecyclerView.ViewHold
             tick.contentDescription= "1"
         }
         else {
-            tick.setImageResource(R.drawable.bug1)
+            tick.setImageResource(R.drawable.remove_circle_24)
             tick.contentDescription= "0"
 
         }
     }
 
     init {
-        itemView.setOnClickListener {
+        itemView.regular_task_tick.setOnClickListener {
 
             if (itemView.regular_task_tick.contentDescription== "0")   {
                 itemView.regular_task_tick.setImageResource(R.drawable.tick1)
@@ -62,7 +61,7 @@ class SpecialTaskListHolder constructor(itemView : View) : RecyclerView.ViewHold
                 UpdateTick("1", itemView.regular_task_name.text.toString())
             }
             else{
-                itemView.regular_task_tick.setImageResource(R.drawable.bug1)
+                itemView.regular_task_tick.setImageResource(R.drawable.remove_circle_24)
                 itemView.regular_task_tick.contentDescription = "0"
                 UpdateTick("0", itemView.regular_task_name.text.toString())
             }
@@ -75,7 +74,7 @@ class SpecialTaskListHolder constructor(itemView : View) : RecyclerView.ViewHold
         val values= ContentValues()
         values.put("Today", newState)
 
-        val ID= dbManager.UpdateRegularTaskTick(values, name)
+        val ID= dbManager.UpdateSpecialTaskTick(values, name)
 
         if (ID>0)
             if (newState=="1")

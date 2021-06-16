@@ -2,16 +2,18 @@ package com.aaryaman.alfred
 
 import android.app.TimePickerDialog
 import android.content.ContentValues
+import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.aaryaman.alfred.db.DbManager
 import kotlinx.android.synthetic.main.activity_add_task.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-class AddTask : AppCompatActivity() {
+class AddSpecialTask : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_task)
@@ -34,10 +36,9 @@ class AddTask : AppCompatActivity() {
             values.put("Time", SimpleDateFormat("hh:mm").format(cal.timeInMillis))
             values.put("Today", 0)
 
-//            textView4.text = cal.timeInMillis.toString()
-            val ID= dbManager.InsertRegularTask(values)
+            val ID= dbManager.InsertSpecialTask(values)
 
-            if (    ID>0)
+            if (ID>0)
                 Toast.makeText(this, "Task added ✅ \n Id- $ID", Toast.LENGTH_SHORT).show()
             else
                 Toast.makeText(this, "Error occurred ", Toast.LENGTH_SHORT).show()

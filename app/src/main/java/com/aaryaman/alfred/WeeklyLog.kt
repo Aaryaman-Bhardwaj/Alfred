@@ -10,7 +10,6 @@ import com.aaryaman.alfred.recycler.dateRecyclerViewAdapter
 import com.aaryaman.alfred.recycler.taskNameRecyclerViewAdapter
 import com.aaryaman.alfred.recycler.tickRecyclerViewAdapter
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_main.button
 import kotlinx.android.synthetic.main.activity_weekly_log.*
 
 class WeeklyLog : AppCompatActivity() {
