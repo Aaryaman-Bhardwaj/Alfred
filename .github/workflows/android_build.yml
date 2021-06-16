@@ -1,6 +1,6 @@
 name: Android Built
 
-on: pull_request
+on: commit
 
 jobs:
   build:
