@@ -26,7 +26,7 @@ fun showDialog(cont: Context, id: Int){
 
     val builder = AlertDialog.Builder(cont)
     builder.setTitle("Delete the daily Task?")
-    builder.setMessage("Are you sure you want to delete this task?.")
+    builder.setMessage("Are you sure you want to delete this task?")
 
     val dialogClickListener = DialogInterface.OnClickListener{ _, which ->
         when(which){
