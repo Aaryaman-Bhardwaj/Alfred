@@ -16,6 +16,8 @@ class AddTask : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_task)
 
+        edit_task_time.setIs24HourView(true);
+
         val cal = Calendar.getInstance()
         edit_task_time.setOnTimeChangedListener  { _, hour, minute ->
             cal.set(Calendar.HOUR, hour)
@@ -31,7 +33,7 @@ class AddTask : AppCompatActivity() {
 
             val values= ContentValues()
             values.put("Name", edit_task_name.text.toString())
-            values.put("Time", SimpleDateFormat("hh:mm").format(cal.timeInMillis))
+            values.put("Time", SimpleDateFormat("HH:mm").format(cal.timeInMillis))
             values.put("Today", 0)
 
 //            textView4.text = cal.timeInMillis.toString()

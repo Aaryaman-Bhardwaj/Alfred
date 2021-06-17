@@ -1,19 +1,16 @@
 package com.aaryaman.alfred
 
-import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.database.Cursor
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.aaryaman.alfred.db.DbManager
 import com.aaryaman.alfred.models.Task
-import com.aaryaman.alfred.recycler.cont
-import com.aaryaman.alfred.recycler.homeRecyclerViewAdapter
+import com.aaryaman.alfred.recycler.contMainActivity
 import com.aaryaman.alfred.recycler.regularTaskListAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_regular_tasks.*
@@ -21,43 +18,42 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-fun showDialog(cont: Context, id: Int){
+
+lateinit var cont2: Context
+
+fun showDialog(cont: Context, name: String) {
     lateinit var dialog: AlertDialog
 
     val builder = AlertDialog.Builder(cont)
     builder.setTitle("Delete the daily Task?")
-    builder.setMessage("Are you sure you want to delete this task?")
+//    builder.setMessage("Are you sure you want to delete this task?")
 
     val dialogClickListener = DialogInterface.OnClickListener{ _, which ->
         when(which){
-            DialogInterface.BUTTON_POSITIVE -> deleteRegularTask(id)
+            DialogInterface.BUTTON_POSITIVE -> DbManager(cont2).deleteRegularTask(name)
+//            refreshList
         }
     }
 
 
-    builder.setPositiveButton("YES",dialogClickListener)
+    builder.setPositiveButton("YES", dialogClickListener)
 
-    builder.setNegativeButton("NO",dialogClickListener)
+    builder.setNegativeButton("NO", dialogClickListener)
 
     dialog = builder.create()
     dialog.show()
 
-
 }
-
-fun deleteRegularTask(id: Int) {
-    TODO("Not yet implemented")
-}
-
-lateinit var cont2: Context
 
 class RegularTasks : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_regular_tasks)
 
         cont2 =this
         refreshList()
+
 
         goto_home.setOnClickListener {
             super.onBackPressed()
@@ -71,7 +67,7 @@ class RegularTasks : AppCompatActivity() {
 
     fun refreshList() {
 
-        cont = this
+        contMainActivity = this
         val cursor= LoadQueryToday()
 
         val itemNames = mutableListOf<String>()
@@ -122,11 +118,22 @@ class RegularTasks : AppCompatActivity() {
 
     }
 
+
+
+
     private fun LoadQueryToday(): Cursor {
         val dbManager = DbManager(this)
         return dbManager.QueryToday()
     }
 
+    override fun onResume() {
+        super.onResume()
+        regular_task_list.apply {
+            layoutManager = LinearLayoutManager(this@RegularTasks)
+//                addItemDecoration(RvDecor(30))
+            adapter = regularTaskListAdapter()
+        }
+    }
 
 
 }

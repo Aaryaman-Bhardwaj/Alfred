@@ -47,8 +47,8 @@ class RegularTaskListViewHolder constructor(itemView : View) : RecyclerView.View
 
     init {
         itemView.task_delete.setOnClickListener {
-            showDialog(cont2, 1)
-
+//            RegularTasks
+            showDialog(cont2, itemView.task_name.text.toString())
         }
     }
 

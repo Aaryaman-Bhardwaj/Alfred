@@ -119,4 +119,8 @@ class DbManager {
         qb.tables= dbSTable
         return qb.query(sqlDB, null, null, null, null, null, null)
     }
+
+    fun deleteRegularTask(name: String): Int {
+        return sqlDB!!.delete(dbTable, "$colName = '$name' ", null)
+    }
 }

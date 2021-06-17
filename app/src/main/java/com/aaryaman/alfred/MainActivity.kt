@@ -1,21 +1,18 @@
 package com.aaryaman.alfred
 
 import android.app.*
-import android.content.ContentValues
 import android.content.Intent
 import android.database.Cursor
 import android.os.Build
 import android.os.Bundle
-import android.text.Editable
 import android.util.Log
-import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.aaryaman.alfred.db.DbManager
-import com.aaryaman.alfred.models.ListBaseString
+import com.aaryaman.alfred.Functions
 import com.aaryaman.alfred.models.Task
-import com.aaryaman.alfred.recycler.cont
+import com.aaryaman.alfred.recycler.contMainActivity
 import com.aaryaman.alfred.recycler.homeRecyclerViewAdapter
 import com.aaryaman.alfred.recycler.specialTaskHomeRecyclerViewAdapter
 import kotlinx.android.synthetic.main.activity_main.*
@@ -28,15 +25,15 @@ import java.util.Locale
 import kotlin.collections.ArrayList
 
 
-var dateList: ArrayList<ListBaseString> = ArrayList()
-var tickList: ArrayList<ListBaseString> = ArrayList()
-var nameList: ArrayList<ListBaseString> = ArrayList()
 var todaysTaskList : ArrayList<Task> = ArrayList()
 var todaysSpecialTaskList : ArrayList<Task> = ArrayList()
 var todaysTimeList : ArrayList<String> = ArrayList()
 
 const val millisInADay = 86400000
-const val millisIn530hrs = 23400000
+const val millisIn530hrs = 23400000 //for adjusting the time zone (+530)
+
+lateinit var notificationTitle: String
+
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,20 +42,11 @@ class MainActivity : AppCompatActivity() {
 
         createNotificationChannel()
 
-        dateList = arrayListOf(ListBaseString("May-17"))//, ListBaseString("May-18"), ListBaseString("May-19"), ListBaseString("May-20"))
-        tickList = arrayListOf(ListBaseString("0"), ListBaseString("0"), ListBaseString("1"), ListBaseString("0"), ListBaseString("1"))
-        nameList = arrayListOf(ListBaseString("Jogging"), ListBaseString("Reading"), ListBaseString("Cleaning"), ListBaseString("Purchase"), ListBaseString("Medicine"))
-
-
-
-
 
             DbManager(this)
             refreshSpecialList()
             refreshList()
             triggerNotification()
-
-
 
 
         goto_reg_task.setOnClickListener {
@@ -77,7 +65,7 @@ class MainActivity : AppCompatActivity() {
 
     fun refreshList(){
 
-        cont = this
+        contMainActivity = this
         val cursor= LoadQueryToday()
 
         val itemNames = mutableListOf<String>()
@@ -135,7 +123,7 @@ class MainActivity : AppCompatActivity() {
 
     fun refreshSpecialList(){
 
-        cont = this
+        contMainActivity = this
         val cursor= LoadQuerySpecialToday()
 
         val itemNames = mutableListOf<String>()
@@ -178,23 +166,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-//    fun addSpecialTask(time: String){
-//        val dbManager= DbManager(this)
-//
-//        val values= ContentValues()
-//        values.put("Name", edit_add_special_task.text.toString())
-//        values.put("Time", time)
-//        values.put("Snooze", "30")
-//        values.put("Today", 0)
-//
-//        val ID= dbManager.InsertSpecialTask(values)
-//
-//        if (ID>0)
-//            Toast.makeText(this, "Task added ✅ \n Id- $ID", Toast.LENGTH_SHORT).show()
-//        else
-//            Toast.makeText(this, "Error occurred ", Toast.LENGTH_SHORT).show()
-//    }
-
 
     fun createNotificationChannel(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -210,35 +181,41 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
     fun triggerNotification(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//                Toast.makeText(this, "reminder set", Toast.LENGTH_SHORT).show()
 
-                val intent = Intent(this, ReminderBroadcast::class.java)
+            val intent = Intent(contMainActivity, ReminderBroadcast::class.java)
 
-                val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
+            val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
 
-                val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+            val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
 
-                for (i in 0 until todaysTimeList.size)
-                    if (todaysTimeList.size > 0) {
-//                        Toast.makeText(this, "reminder set aaggaaa", Toast.LENGTH_SHORT).show()
-                        Log.e("TAG", todaysTimeList.toString())
-                        val date = Date(todaysTimeList[i]).toString() //Mon May 31 10:42:19 GMT+05:30 2021
-                        Log.e("TAG", Date(todaysTimeList[i]).toString())
+            for (i in 0 until todaysTimeList.size)
+                if (todaysTimeList.size > 0) {
+                    Log.e("TAG", todaysTimeList.toString())
+                    val date = Date(todaysTimeList[i]).toString() //Mon May 31 10:42:19 GMT+05:30 2021
+                    Log.e("TAG", Date(todaysTimeList[i]).toString())
 
-                        val formatter = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH)
-                        val localDate = LocalDateTime.parse(date, formatter)
-                        var timeInMilliseconds = localDate.atOffset(ZoneOffset.UTC).toInstant().toEpochMilli()
-                        timeInMilliseconds += millisIn530hrs
-                        Log.e("TAG", "Date in milli :: FOR API >= 26 >>> $timeInMilliseconds")
-                        todaysTimeList[i] = timeInMilliseconds.toString()
+                    val formatter = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH)
+                    val localDate = LocalDateTime.parse(date, formatter)
+                    var timeInMilliseconds = localDate.atOffset(ZoneOffset.UTC).toInstant().toEpochMilli()
+                    timeInMilliseconds += millisIn530hrs
+                    Log.e("TAG", "Date in milli :: FOR API >= 26 >>> $timeInMilliseconds")
+                    todaysTimeList[i] = timeInMilliseconds.toString()
 
-                    }
+                }
 
             if (todaysTimeList.size > 0) {
+
+//                for(i in 0 until todaysTimeList.size){
+//                    if (todaysTimeList[i] < )
+//                }
+
                 todaysTimeList.sort()
                 alarmManager.set(AlarmManager.RTC_WAKEUP, todaysTimeList[0].toLong(), pendingIntent)
+//                alarmManager.set(AlarmManager.RTC_WAKEUP, todaysTimeList[1].toLong(), pendingIntent)
+
             }
 
         }

@@ -18,7 +18,7 @@ import com.aaryaman.alfred.db.DbManager
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-lateinit var cont: Context
+lateinit var contMainActivity: Context
 
 class homeRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -90,7 +90,7 @@ class RegularTaskListHolder constructor(itemView : View) : RecyclerView.ViewHold
     }
 
     fun UpdateTick(newState: String, name: String){
-        val dbManager= DbManager(cont)
+        val dbManager= DbManager(contMainActivity)
 
         val values= ContentValues()
         values.put("Today", newState)
@@ -102,13 +102,13 @@ class RegularTaskListHolder constructor(itemView : View) : RecyclerView.ViewHold
 
         if (ID>0)
             if (newState=="1"){
-                Toast.makeText(cont, " ✅ $name", Toast.LENGTH_SHORT).show()
+                Toast.makeText(contMainActivity, " ✅ $name", Toast.LENGTH_SHORT).show()
             }
             else{
-                Toast.makeText(cont, " ❌ $name", Toast.LENGTH_SHORT).show()
+                Toast.makeText(contMainActivity, " ❌ $name", Toast.LENGTH_SHORT).show()
             }
         else
-            Toast.makeText(cont, "Error occurred ", Toast.LENGTH_SHORT).show()
+            Toast.makeText(contMainActivity, "Error occurred ", Toast.LENGTH_SHORT).show()
 
     }
 }
