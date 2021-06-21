@@ -1,28 +1,16 @@
 package com.aaryaman.alfred
 
-import android.app.AlarmManager
-import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Context.ALARM_SERVICE
 import android.content.Intent
-import android.os.Build
-import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContextCompat.getSystemService
-import com.aaryaman.alfred.recycler.contMainActivity
-import java.time.LocalDateTime
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
-import java.util.*
 
 class ReminderBroadcast: BroadcastReceiver()  {
     override fun onReceive(context: Context?, intent: Intent?) {
 
         val builder = NotificationCompat.Builder(context!!, "regularTask")
-            .setSmallIcon(R.drawable.logo)
+            .setSmallIcon(R.drawable.logo2)
             .setContentTitle(notificationTitle)
 //            .setContentIntent()
             .setContentText("Doing the things?")
@@ -30,6 +18,7 @@ class ReminderBroadcast: BroadcastReceiver()  {
 
         val notificationManager = NotificationManagerCompat.from(context)
         notificationManager.notify(200, builder.build())
+
 
 //        triggerNextNotification()
 
